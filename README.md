@@ -129,8 +129,20 @@ curl -k --location 'https://localhost:8443/fineract-provider/api/v1/clients/savi
 
 ## 📚 Respuestas Teóricas y Parte Práctica
 
-> ⚠️ **Importante:** Las **respuestas de la prueba teórica** y la **descripción detallada de la parte práctica** se encuentran en este documento externo:  
-> [📄 Respuestas y práctica completa](https://docs.google.com/document/d/1TIDuuYFjtm2F-NmfDSMu_ehtlkZVdzi22Arn7s1SAu8/edit?usp=sharing)  
+> ⚠️ **Importante:**  
+> Las **respuestas teóricas** y la **explicación detallada de la parte práctica** se encuentran disponibles en el siguiente documento:  
+> 🔗 [**Ver documento completo en Google Docs**](https://docs.google.com/document/d/1TIDuuYFjtm2F-NmfDSMu_ehtlkZVdzi22Arn7s1SAu8/edit?usp=sharing)
 >
-> Allí verás las explicaciones completas paso a paso, con ejemplos y datos usados.
-
+> 📘 En este documento se describen:
+> - Las respuestas a las preguntas teóricas de la prueba técnica.  
+> - El contexto de datos utilizados para las pruebas.  
+> - La ejecución paso a paso de los endpoints implementados.  
+> - Evidencias de las consultas y resultados obtenidos en Fineract.  
+>
+> 🧩 **Nota adicional:**  
+> Los cambios correspondientes a la parte práctica del desarrollo se encuentran en el siguiente commit del repositorio:  
+> ```
+> Add practical Java exercise for technical test Cofincafe
+> ```
+>
+> *(Puedes revisar este commit para ver las clases modificadas y el código fuente del ejercicio práctico.)*
