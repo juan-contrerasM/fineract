@@ -19,6 +19,7 @@
 package org.apache.fineract.portfolio.client.data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -133,6 +134,8 @@ public final class ClientData implements Comparable<ClientData>, Serializable {
                 officeId, staffId, mobileNo, dateOfBirth, clientTypeId, null, clientClassificationId, null, address, clientNonPersonDetails,
                 locale, dateFormat);
     }
+
+
 
     public static ClientData createClientForInterestPosting(final Long id, final Long officeId) {
         return new ClientData(id, officeId);

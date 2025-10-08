@@ -20,6 +20,8 @@ package org.apache.fineract.portfolio.client.service;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
+
 import org.apache.fineract.infrastructure.core.domain.ExternalId;
 import org.apache.fineract.infrastructure.core.service.Page;
 import org.apache.fineract.infrastructure.core.service.SearchParameters;
@@ -59,5 +61,13 @@ public interface ClientReadPlatformService {
     LocalDate retrieveClientTransferProposalDate(Long clientId);
 
     Long retrieveClientIdByExternalId(ExternalId externalId);
+
+    Collection<ClientData> retrieveClientsWithNegativeBalance();
+
+    List<ClientData> retrieveTopClientsByBalance();
+
+    List<ClientData> retrieveClientsWithNegativeSavingsBalance();
+
+    String retrieveClientsWithNegativeSavingsBalanceJson();
 
 }

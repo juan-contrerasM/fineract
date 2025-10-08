@@ -26,16 +26,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.DefaultValue;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -45,6 +36,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.fineract.commands.domain.CommandWrapper;
 import org.apache.fineract.commands.service.CommandWrapperBuilder;
 import org.apache.fineract.commands.service.PortfolioCommandSourceWritePlatformService;
@@ -77,6 +69,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Path("/v1/clients")
 @Component
 @Tag(name = "Client", description = "Clients are people and businesses that have applied (or may apply) to an MFI for loans.\n" + "\n"
@@ -97,6 +90,86 @@ public class ClientsApiResource {
     private final BulkImportWorkbookPopulatorService bulkImportWorkbookPopulatorService;
     private final GuarantorReadPlatformService guarantorReadPlatformService;
     private final SqlValidator sqlValidator;
+
+    /**
+     * Endpoint para obtener todos los clientes con saldo negativo en creditos.
+     *
+     * @return JSON con la lista de clientes con saldo negativo.
+     */
+    @GET
+    @Path("/credit-negative")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public String retrieveClientsWithNegativeBalance() {
+        log.info("Solicitud recibida para obtener clientes con saldo negativo");
+        try {
+            final Collection<ClientData> clients = this.clientReadPlatformService.retrieveClientsWithNegativeBalance();
+            log.info("Clientes con saldo negativo encontrados: {}", clients.size());
+            return this.toApiJsonSerializer.serialize(clients);
+        } catch (Exception e) {
+            log.error("Error al recuperar clientes con saldo negativo", e);
+            throw new WebApplicationException("Error al recuperar clientes con saldo negativo", e, 500);
+        }
+    }
+
+    /**
+     * Endpoint para obtener el TOP 3 de los clientes con saldo negativo.
+     *
+     * @return JSON con la lista de clientes con saldo negativo.
+     */
+    @GET
+    @Path("/top-balance")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public String retrieveTopClientsByBalance() {
+        log.info("Solicitud recibida para obtener los top 3 clientes con mayor balance");
+        try {
+            final List<ClientData> clients = this.clientReadPlatformService.retrieveTopClientsByBalance();
+            log.info("Top 3 clientes obtenidos correctamente");
+            return this.toApiJsonSerializer.serialize(clients);
+        } catch (Exception e) {
+            log.error("Error al recuperar los top 3 clientes", e);
+            throw new WebApplicationException("Error al recuperar los top 3 clientes", e, 500);
+        }
+    }
+
+    /**
+     * Endpoint para obtener todos los clientes con un balance negativo en cuenta de ahorros
+     *
+     * @return JSON con la lista de clientes con saldo negativo.
+     */
+    @GET
+    @Path("/savings-negative")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public String retrieveClientsWithNegativeSavingsBalance() {
+        log.info("Solicitud recibida para obtener clientes con saldo negativo en cuentas de ahorro");
+        try {
+            final Collection<ClientData> clients = this.clientReadPlatformService.retrieveClientsWithNegativeSavingsBalance();
+            log.info("Clientes con saldo negativo en cuentas de ahorro obtenidos: {}", clients.size());
+            return this.toApiJsonSerializer.serialize(clients);
+        } catch (Exception e) {
+            log.error("Error al recuperar clientes con saldo negativo en cuentas de ahorro", e);
+            throw new WebApplicationException("Error al recuperar clientes con saldo negativo en cuentas de ahorro", e, 500);
+        }
+    }
+
+
+    /**
+     * Endpoint para obtener todos los clientes con un balance negativo en cuenta de ahorros
+     *
+     * @return JSON con la lista de clientes con saldo negativo.
+     */
+    @GET
+    @Path("/savings-negative-json")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public String retrieveClientsWithNegativeSavingsBalanceJson() {
+        log.info("Solicitud recibida para obtener clientes con saldo negativo en cuentas de ahorro (JSON)");
+        try {
+            // Llamamos al servicio
+            return  this.clientReadPlatformService.retrieveClientsWithNegativeSavingsBalanceJson();
+        } catch (Exception e) {
+            log.error("Error al recuperar clientes con saldo negativo en cuentas de ahorro", e);
+            throw new WebApplicationException("Error al recuperar clientes con saldo negativo en cuentas de ahorro", e, 500);
+        }
+    }
 
     @GET
     @Path("template")

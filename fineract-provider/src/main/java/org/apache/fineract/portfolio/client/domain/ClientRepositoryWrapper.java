@@ -104,4 +104,15 @@ public class ClientRepositoryWrapper {
         return this.repository.findIdByExternalId(externalId);
     }
 
+    public List<Client> retrieveClientsWithNegativeBalance(){
+        return this.repository.retrieveClientsWithNegativeBalance();
+    }
+
+    public List<Client> retrieveTopClientsByBalance() {
+        return this.repository.retrieveTopClientsByBalance();
+    }
+
+    public List<Client> retrieveClientsWithNegativeSavingsBalance() {
+        return this.repository.retrieveClientsWithNegativeSavingsBalance();
+    }
 }

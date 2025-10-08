@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.fineract.infrastructure.codes.data.CodeValueData;
 import org.apache.fineract.infrastructure.codes.service.CodeValueReadPlatformService;
@@ -37,6 +38,7 @@ import org.apache.fineract.infrastructure.core.data.EnumOptionData;
 import org.apache.fineract.infrastructure.core.domain.ExternalId;
 import org.apache.fineract.infrastructure.core.domain.JdbcSupport;
 import org.apache.fineract.infrastructure.core.exception.PlatformApiDataValidationException;
+import org.apache.fineract.infrastructure.core.serialization.ToApiJsonSerializer;
 import org.apache.fineract.infrastructure.core.service.ExternalIdFactory;
 import org.apache.fineract.infrastructure.core.service.Page;
 import org.apache.fineract.infrastructure.core.service.PaginationHelper;
@@ -63,6 +65,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClientReadPlatformServiceImpl implements ClientReadPlatformService {
@@ -82,6 +85,71 @@ public class ClientReadPlatformServiceImpl implements ClientReadPlatformService 
     private final ClientCollateralManagementRepositoryWrapper clientCollateralManagementRepositoryWrapper;
     private final ClientRepositoryWrapper clientRepositoryWrapper;
     private final ClientMapper clientMapper;
+
+    // Inyectar ToApiJsonSerializer para ClientData
+    private final ToApiJsonSerializer<ClientData> toApiJsonSerializer;
+
+
+    /**
+     * Obtiene la lista de clientes que tienen saldo negativo.
+     *
+     * @return Lista de objetos ClientData con saldo negativo.
+     */
+    @Override
+    public List<ClientData> retrieveClientsWithNegativeBalance (){
+        log.info("Consultando clientes con saldo negativo en la base de datos");
+        final List<Client> clients = this.clientRepositoryWrapper.retrieveClientsWithNegativeBalance();
+        log.info("Clientes recuperados de la base de datos: {}", clients.size());
+        return clients.stream()
+                .map(this.clientMapper::map)
+                .toList();
+    }
+
+    /**
+     * Obtiene el top 3 clientes con mayor balance
+     *
+     * @return Lista de objetos ClientData
+     */
+    @Override
+    public List<ClientData> retrieveTopClientsByBalance() {
+        log.info("Consultando top 3 clientes con mayor balance");
+        final List<Client> clients = this.clientRepositoryWrapper.retrieveTopClientsByBalance();
+        log.info("Clientes recuperados: {}", clients.size());
+        return clients.stream()
+                .map(this.clientMapper::map)
+                .limit(3) // Asegura solo 3 resultados
+                .toList();
+    }
+
+    /**
+     * Obtiene la lista de clientes que tienen balance negativo.
+     *
+     * @return Lista de objetos ClientData
+     */
+    @Override
+    public List<ClientData> retrieveClientsWithNegativeSavingsBalance() {
+        log.info("Consultando clientes con saldo negativo en cuentas de ahorro");
+        final List<Client> clients = this.clientRepositoryWrapper.retrieveClientsWithNegativeSavingsBalance();
+        log.info("Clientes recuperados: {}", clients.size());
+        return clients.stream()
+                .map(this.clientMapper::map)
+                .toList();
+    }
+
+    @Override
+    public String retrieveClientsWithNegativeSavingsBalanceJson() {
+        log.info("Consultando clientes con saldo negativo en cuentas de ahorro");
+        // Obtenemos la lista de clientes
+        final List<Client> clients = this.clientRepositoryWrapper.retrieveClientsWithNegativeSavingsBalance();
+        // Mapeamos a ClientData
+        final List<ClientData> clientDataList = clients.stream()
+                .map(this.clientMapper::map)
+                .toList();
+        // Convertimos la lista a JSON
+        String json = this.toApiJsonSerializer.serialize(clientDataList);
+        log.info("Clientes convertidos a JSON, total: {}", clientDataList.size());
+        return json;
+    }
 
     @Override
     public Page<ClientData> retrieveAll(final SearchParameters searchParameters) {
