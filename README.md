@@ -142,7 +142,7 @@ curl -k --location 'https://localhost:8443/fineract-provider/api/v1/clients/savi
 > 🧩 **Nota adicional:**  
 > Los cambios correspondientes a la parte práctica del desarrollo se encuentran en el siguiente commit del repositorio:  
 > ```
-> Add practical Java exercise for technical test Cofincafe
+> Add practical Java exercise for technical test Conficafe
 > ```
 >
 > *(Puedes revisar este commit para ver las clases modificadas y el código fuente del ejercicio práctico.)*
